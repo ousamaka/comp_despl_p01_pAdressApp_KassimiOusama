@@ -17,6 +17,8 @@
                   <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save" />
                   <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="SaveAs" />
                   <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleImportCsv" text="Import CSV..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleExportCsv" text="Export CSV..." />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">

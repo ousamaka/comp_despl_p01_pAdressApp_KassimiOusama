@@ -166,4 +166,64 @@ public class RootLayoutController {
         alert.showAndWait();
     }
 
+    // ---------------- CSV EXPORT / IMPORT ----------------
+
+    @FXML
+    private void handleExportCsv() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        // Mostrar diálogo de guardar
+        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+
+        if (file != null) {
+            // Asegurar extensión .csv
+            if (!file.getPath().toLowerCase().endsWith(".csv")) {
+                file = new File(file.getPath() + ".csv");
+            }
+
+            try {
+                // Usamos el repositorio CSV para guardar
+                es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.persistence.CsvPersonRepository csvRepo =
+                        new es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.persistence.CsvPersonRepository();
+
+                csvRepo.save(file, mainApp.getPersonData());
+
+            } catch (IOException e) {
+                showError("Export Error", "Could not save data to CSV file:\n" + file.getPath(), e);
+            }
+        }
+    }
+
+    @FXML
+    private void handleImportCsv() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        // Mostrar diálogo de abrir
+        File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
+
+        if (file != null) {
+            try {
+                es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.persistence.CsvPersonRepository csvRepo =
+                        new es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.persistence.CsvPersonRepository();
+
+                // Cargamos los datos del CSV
+                java.util.List<es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.model.Person> importedPersons = csvRepo.load(file);
+
+                // Opción A: Añadir a la lista existente (Checklist dice "reaparecer la lista")
+                mainApp.getPersonData().addAll(importedPersons);
+
+                // Opción B: Si prefieres borrar lo anterior y dejar solo lo del CSV, descomenta esta linea:
+                // mainApp.getPersonData().setAll(importedPersons);
+
+            } catch (IOException e) {
+                showError("Import Error", "Could not load data from CSV file:\n" + file.getPath(), e);
+            }
+        }
+    }
+
+
 }
