@@ -225,5 +225,9 @@ public class RootLayoutController {
         }
     }
 
+    @FXML
+    private void handleShowBirthdayStatistics() {
+        mainApp.showBirthdayStatistics();
+    }
 
 }

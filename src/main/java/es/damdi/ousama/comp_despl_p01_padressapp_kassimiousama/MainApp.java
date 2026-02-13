@@ -296,6 +296,38 @@ public class MainApp extends Application {
             setPersonFilePath(f); // así autosave crea el fichero al salir
         }
     }
+    /**
+     * Opens a dialog to show birthday statistics.
+     */
+    public void showBirthdayStatistics() {
+        try {
+            // Load the fxml file and create a new stage for the popup.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("view/BirthdayStatistics.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Birthday Statistics");
+            dialogStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+
+            // Añadir icono y estilos si quieres que se vea igual que el resto
+            dialogStage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/address_book_32.png")));
+            Scene scene = new Scene(page);
+            // scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet()); // Opcional si quieres bootstrap aqui tambien
+            dialogStage.setScene(scene);
+
+            // Set the persons into the controller.
+            es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.view.BirthdayStatisticsController controller = loader.getController();
+            controller.setPersonData(personData);
+
+            dialogStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private final Path defaultJsonPath =
             Paths.get(System.getProperty("user.home"), ".addressappv2", "persons.json");
 
