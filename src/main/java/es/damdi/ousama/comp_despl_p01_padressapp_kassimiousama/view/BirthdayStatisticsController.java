@@ -2,6 +2,7 @@ package es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.view;
 
 import es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.model.Person;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
@@ -32,27 +33,65 @@ public class BirthdayStatisticsController {
         String[] months = DateFormatSymbols.getInstance(Locale.ENGLISH).getMonths();
         monthNames.addAll(Arrays.asList(months));
         xAxis.setCategories(monthNames);
+
+        // --- ARREGLAR LA ESCALA DEL GRÁFICO DE LÍNEAS (AÑOS) ---
+        NumberAxis xAxisLine = (NumberAxis) lineChart.getXAxis();
+
+        // 1. Evitar que el eje X empiece obligatoriamente en 0 (hace que el rango sea realista)
+        xAxisLine.setForceZeroInRange(false);
+
+        // 2. Quitar el punto/coma de los miles (ej: "2,000" -> "2000")
+        xAxisLine.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                return String.valueOf(object.intValue()); // Muestra solo el número entero sin formato
+            }
+
+            @Override
+            public Number fromString(String string) {
+                return Integer.parseInt(string);
+            }
+        });
     }
 
     /**
-     * Setea los datos de las personas y genera TODOS los gráficos a la vez.
+     * Setea los datos, dibuja por primera vez y añade el escuchador en tiempo real
      */
-    public void setPersonData(List<Person> persons) {
-        // 1. Cargar Gráfico de Barras (Meses)
+    public void setPersonData(ObservableList<Person> persons) {
+        // 1. Pintar los gráficos por primera vez al abrir la ventana
+        refreshAllCharts(persons);
+
+        // 2. MAGIA: Añadir un "Listener" (Escuchador).
+        // Si añades, borras o editas a una persona, esto se ejecuta solo.
+        persons.addListener((ListChangeListener<Person>) change -> {
+            refreshAllCharts(persons);
+        });
+    }
+
+    /**
+     * Limpia los gráficos antiguos y dibuja los nuevos.
+     */
+    private void refreshAllCharts(List<Person> persons) {
+        // Limpiamos los datos anteriores para que no se amontonen las barras y líneas
+        barChart.getData().clear();
+        lineChart.getData().clear();
+
+        // (El pieChart se sobreescribe solo con setData, no hace falta clear)
+
+        // Volvemos a calcular y pintar
         updateBarChart(persons);
-
-        // 2. Cargar PieChart (Generaciones)
         updatePieChart(persons);
-
-        // 3. Cargar LineChart (Años)
         updateLineChart(persons);
     }
 
     private void updateBarChart(List<Person> persons) {
         int[] monthCounter = new int[12];
         for (Person p : persons) {
-            int month = p.getBirthday().getMonthValue() - 1;
-            monthCounter[month]++;
+            // Protección por si la fecha está vacía
+            if (p.getBirthday() != null) {
+                int month = p.getBirthday().getMonthValue() - 1;
+                monthCounter[month]++;
+            }
         }
 
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
@@ -72,12 +111,14 @@ public class BirthdayStatisticsController {
         int others = 0;
 
         for (Person p : persons) {
-            int year = p.getBirthday().getYear();
-            if (year >= 1997 && year <= 2012) genZ++;
-            else if (year >= 1981 && year <= 1996) millennials++;
-            else if (year >= 1965 && year <= 1980) genX++;
-            else if (year >= 1946 && year <= 1964) boomers++;
-            else others++;
+            if (p.getBirthday() != null) {
+                int year = p.getBirthday().getYear();
+                if (year >= 1997 && year <= 2012) genZ++;
+                else if (year >= 1981 && year <= 1996) millennials++;
+                else if (year >= 1965 && year <= 1980) genX++;
+                else if (year >= 1946 && year <= 1964) boomers++;
+                else others++;
+            }
         }
 
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
@@ -96,8 +137,10 @@ public class BirthdayStatisticsController {
         Map<Integer, Integer> yearCounts = new TreeMap<>(); // TreeMap ordena por clave (año)
 
         for (Person p : persons) {
-            int year = p.getBirthday().getYear();
-            yearCounts.put(year, yearCounts.getOrDefault(year, 0) + 1);
+            if (p.getBirthday() != null) {
+                int year = p.getBirthday().getYear();
+                yearCounts.put(year, yearCounts.getOrDefault(year, 0) + 1);
+            }
         }
 
         XYChart.Series<Number, Number> series = new XYChart.Series<>();

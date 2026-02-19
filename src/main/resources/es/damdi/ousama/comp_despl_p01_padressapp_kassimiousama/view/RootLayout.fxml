@@ -34,6 +34,9 @@
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleHelpHTML" text="HTML" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleHelpMarkdown" text="Markdown" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleHelpPDF" text="PDF" />
             </items>
           </Menu>
         </menus>

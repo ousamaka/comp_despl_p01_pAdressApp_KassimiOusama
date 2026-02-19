@@ -141,3 +141,59 @@
 .button:default:hover {
     -fx-background-color: derive(-fx-focus-color,30%);
 }
+
+/* =======================================================
+   ESTILOS PARA LOS GRÁFICOS (BARRAS, PIE, LÍNEA)
+   ======================================================= */
+
+/* Fondo general transparente para que coja el color del tema */
+.chart {
+    -fx-padding: 10px;
+    -fx-background-color: transparent;
+}
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+/* Letras, títulos y leyendas en blanco */
+.chart-title {
+    -fx-text-fill: white;
+    -fx-font-size: 16pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+.chart-legend {
+    -fx-background-color: transparent;
+}
+.axis {
+    -fx-tick-label-fill: #d8d8d8;
+}
+.axis-label {
+    -fx-text-fill: white;
+}
+
+/* ----- 1. GRÁFICO DE BARRAS ----- */
+/* Cambiamos el color por defecto (naranja) al Azul de tu insignia de Cisco */
+.default-color0.chart-bar {
+    -fx-bar-fill: #049fd9;
+}
+
+/* ----- 2. GRÁFICO DE LÍNEAS ----- */
+/* Color de la línea (Amarillo estilo Linux) y grosor */
+.chart-series-line {
+    -fx-stroke: #FCC624;
+    -fx-stroke-width: 3px;
+}
+/* Los puntitos de la línea */
+.chart-line-symbol {
+    -fx-background-color: #FCC624, white;
+    -fx-background-radius: 5px;
+    -fx-padding: 4px;
+}
+
+/* ----- 3. GRÁFICO DE PASTEL (PIE) ----- */
+/* Colores personalizados para cada generación (Colores de Java, Kotlin, etc.) */
+.default-color0.chart-pie { -fx-pie-color: #ED8B00; } /* Naranja */
+.default-color1.chart-pie { -fx-pie-color: #4285F4; } /* Azul */
+.default-color2.chart-pie { -fx-pie-color: #7F52FF; } /* Morado */
+.default-color3.chart-pie { -fx-pie-color: #C71A36; } /* Rojo */
+.default-color4.chart-pie { -fx-pie-color: #239120; } /* Verde */

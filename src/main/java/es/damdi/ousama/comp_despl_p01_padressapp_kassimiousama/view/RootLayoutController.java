@@ -230,4 +230,19 @@ public class RootLayoutController {
         mainApp.showBirthdayStatistics();
     }
 
+    @FXML
+    private void handleHelpHTML() {
+        mainApp.showHelpHTML();
+    }
+
+    @FXML
+    private void handleHelpMarkdown() {
+        mainApp.showHelpMarkdown();
+    }
+
+    @FXML
+    private void handleHelpPDF() {
+        mainApp.showHelpPDF();
+    }
+    
 }
