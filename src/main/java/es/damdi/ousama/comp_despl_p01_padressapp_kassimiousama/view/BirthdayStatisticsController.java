@@ -6,6 +6,12 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
+import javafx.scene.layout.StackPane;
+
+import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.chart.ChartData;
+import javafx.scene.paint.Color;
 
 import java.text.DateFormatSymbols;
 import java.util.*;
@@ -14,7 +20,7 @@ public class BirthdayStatisticsController {
 
     // --- GRÁFICO 1: BARRAS (Tutorial) ---
     @FXML
-    private BarChart<String, Integer> barChart;
+    private BarChart<String, Number> barChart;
     @FXML
     private CategoryAxis xAxis;
     private ObservableList<String> monthNames = FXCollections.observableArrayList();
@@ -23,9 +29,20 @@ public class BirthdayStatisticsController {
     @FXML
     private PieChart pieChart;
 
-    // --- GRÁFICO 3: LINEA (Años) ---
+    // --- GRÁFICO 3: LÍNEA (Años) ---
     @FXML
     private LineChart<Number, Number> lineChart;
+
+    // --- GRÁFICO 4: DONUT (TilesFX) ---
+    @FXML
+    private StackPane donutChartContainer;
+
+    private Tile donutTile;
+    private ChartData dataGenZ;
+    private ChartData dataMillennials;
+    private ChartData dataGenX;
+    private ChartData dataBoomers;
+    private ChartData dataOthers;
 
     @FXML
     private void initialize() {
@@ -36,11 +53,7 @@ public class BirthdayStatisticsController {
 
         // --- ARREGLAR LA ESCALA DEL GRÁFICO DE LÍNEAS (AÑOS) ---
         NumberAxis xAxisLine = (NumberAxis) lineChart.getXAxis();
-
-        // 1. Evitar que el eje X empiece obligatoriamente en 0 (hace que el rango sea realista)
         xAxisLine.setForceZeroInRange(false);
-
-        // 2. Quitar el punto/coma de los miles (ej: "2,000" -> "2000")
         xAxisLine.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
             @Override
             public String toString(Number object) {
@@ -52,6 +65,45 @@ public class BirthdayStatisticsController {
                 return Integer.parseInt(string);
             }
         });
+
+        // --- ARREGLAR LA ESCALA DEL GRÁFICO DE BARRAS ---
+        NumberAxis yAxisBar = (NumberAxis) barChart.getYAxis();
+        yAxisBar.setTickUnit(1);
+        yAxisBar.setMinorTickVisible(false);
+        yAxisBar.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                if (object.doubleValue() == object.intValue()) {
+                    return String.valueOf(object.intValue());
+                }
+                return "";
+            }
+            @Override
+            public Number fromString(String string) {
+                return Integer.parseInt(string);
+            }
+        });
+
+        // --- INICIALIZAR GRÁFICO DONUT DE TILESFX ---
+        // Nota: Cambiamos PURPLE por MAGENTA que es el color oficial de la librería TilesFX
+        dataGenZ = new ChartData("Gen Z", 0, Tile.ORANGE);
+        dataMillennials = new ChartData("Millennials", 0, Tile.BLUE);
+        dataGenX = new ChartData("Gen X", 0, Tile.MAGENTA);
+        dataBoomers = new ChartData("Baby Boomers", 0, Tile.RED);
+        dataOthers = new ChartData("Others", 0, Tile.GREEN);
+
+        donutTile = TileBuilder.create()
+                .skinType(Tile.SkinType.DONUT_CHART)
+                .title("Generaciones")
+                .textVisible(false)
+                .chartData(dataGenZ, dataMillennials, dataGenX, dataBoomers, dataOthers)
+                .backgroundColor(Color.TRANSPARENT)
+                .build();
+
+        // Metemos el Tile dentro del StackPane
+        if (donutChartContainer != null) {
+            donutChartContainer.getChildren().add(donutTile);
+        }
     }
 
     /**
@@ -76,25 +128,25 @@ public class BirthdayStatisticsController {
         barChart.getData().clear();
         lineChart.getData().clear();
 
-        // (El pieChart se sobreescribe solo con setData, no hace falta clear)
-
         // Volvemos a calcular y pintar
         updateBarChart(persons);
         updatePieChart(persons);
         updateLineChart(persons);
+
+        // Llamada a nuestro nuevo gráfico TilesFX
+        updateDonutChart(persons);
     }
 
     private void updateBarChart(List<Person> persons) {
         int[] monthCounter = new int[12];
         for (Person p : persons) {
-            // Protección por si la fecha está vacía
             if (p.getBirthday() != null) {
                 int month = p.getBirthday().getMonthValue() - 1;
                 monthCounter[month]++;
             }
         }
 
-        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Birthdays");
 
         for (int i = 0; i < monthCounter.length; i++) {
@@ -104,10 +156,10 @@ public class BirthdayStatisticsController {
     }
 
     private void updatePieChart(List<Person> persons) {
-        int genZ = 0;       // 1997 - 2012
-        int millennials = 0;// 1981 - 1996
-        int genX = 0;       // 1965 - 1980
-        int boomers = 0;    // 1946 - 1964
+        int genZ = 0;
+        int millennials = 0;
+        int genX = 0;
+        int boomers = 0;
         int others = 0;
 
         for (Person p : persons) {
@@ -133,8 +185,7 @@ public class BirthdayStatisticsController {
     }
 
     private void updateLineChart(List<Person> persons) {
-        // Contar nacimientos por año usando un Mapa
-        Map<Integer, Integer> yearCounts = new TreeMap<>(); // TreeMap ordena por clave (año)
+        Map<Integer, Integer> yearCounts = new TreeMap<>();
 
         for (Person p : persons) {
             if (p.getBirthday() != null) {
@@ -151,5 +202,27 @@ public class BirthdayStatisticsController {
         }
 
         lineChart.getData().add(series);
+    }
+
+    private void updateDonutChart(List<Person> persons) {
+        int genZ = 0, millennials = 0, genX = 0, boomers = 0, others = 0;
+
+        for (Person p : persons) {
+            if (p.getBirthday() != null) {
+                int year = p.getBirthday().getYear();
+                if (year >= 1997 && year <= 2012) genZ++;
+                else if (year >= 1981 && year <= 1996) millennials++;
+                else if (year >= 1965 && year <= 1980) genX++;
+                else if (year >= 1946 && year <= 1964) boomers++;
+                else others++;
+            }
+        }
+
+        // Lo espectacular de TilesFX es que al usar .setValue(), el gráfico se anima solo
+        dataGenZ.setValue(genZ);
+        dataMillennials.setValue(millennials);
+        dataGenX.setValue(genX);
+        dataBoomers.setValue(boomers);
+        dataOthers.setValue(others);
     }
 }

@@ -13,6 +13,8 @@ module es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama {
     requires flexmark.util.ast;
     requires PDFViewerFX;
 
+    requires eu.hansolo.tilesfx;
+
     opens es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.persistence;
     opens es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.view;
     opens es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.model;
