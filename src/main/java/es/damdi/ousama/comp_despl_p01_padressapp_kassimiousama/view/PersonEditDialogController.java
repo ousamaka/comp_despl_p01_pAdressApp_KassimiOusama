@@ -8,6 +8,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+/**
+ * The type Person edit dialog controller.
+ */
 public class PersonEditDialogController {
 
     @FXML private TextField firstNameField;
@@ -25,10 +28,20 @@ public class PersonEditDialogController {
     private void initialize() {
     }
 
+    /**
+     * Sets dialog stage.
+     *
+     * @param dialogStage the dialog stage
+     */
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
 
+    /**
+     * Sets person.
+     *
+     * @param person the person
+     */
     public void setPerson(Person person) {
         this.person = person;
 
@@ -41,6 +54,11 @@ public class PersonEditDialogController {
         birthdayField.setPromptText("dd.mm.yyyy");
     }
 
+    /**
+     * Is ok clicked boolean.
+     *
+     * @return the boolean
+     */
     public boolean isOkClicked() {
         return okClicked;
     }

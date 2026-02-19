@@ -14,6 +14,7 @@ module es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama {
     requires PDFViewerFX;
 
     requires eu.hansolo.tilesfx;
+    requires jdk.compiler;
 
     opens es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.persistence;
     opens es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.view;

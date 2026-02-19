@@ -16,6 +16,9 @@ import javafx.scene.paint.Color;
 import java.text.DateFormatSymbols;
 import java.util.*;
 
+/**
+ * The type Birthday statistics controller.
+ */
 public class BirthdayStatisticsController {
 
     // --- GRÁFICO 1: BARRAS (Tutorial) ---
@@ -108,6 +111,8 @@ public class BirthdayStatisticsController {
 
     /**
      * Setea los datos, dibuja por primera vez y añade el escuchador en tiempo real
+     *
+     * @param persons the persons
      */
     public void setPersonData(ObservableList<Person> persons) {
         // 1. Pintar los gráficos por primera vez al abrir la ventana

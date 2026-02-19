@@ -6,14 +6,17 @@
 
     <groupId>es.damdi.ousama</groupId>
     <artifactId>comp_despl_p01_pAdressApp_KassimiOusama</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-RELEASE</version>
     <name>comp_despl_p01_pAdressApp_KassimiOusama</name>
+    <description>Aplicación de direcciones en JavaFX con Maven</description>
+    <url>https://github.com/ousamaka/comp_despl_p01_pAdressApp_KassimiOusama.git</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
     <repositories>
@@ -82,6 +85,28 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <additionalOptions>
+                        <additionalOption>--show-packages</additionalOption>
+                        <additionalOption>all</additionalOption>
+                    </additionalOptions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.21.0</version>
+                <configuration>
+                    <locales>es,fr</locales>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
@@ -89,6 +114,7 @@
                     <target>21</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -97,9 +123,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>
-                                es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.MainApp
-                            </mainClass>
+                            <mainClass>es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.LaunchMain</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
@@ -110,6 +134,45 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>es.damdi.ousama.comp_despl_p01_padressapp_kassimiousama.LaunchMain</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <additionalOptions>
+                        <additionalOption>--show-packages</additionalOption>
+                        <additionalOption>all</additionalOption>
+                    </additionalOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
 </project>

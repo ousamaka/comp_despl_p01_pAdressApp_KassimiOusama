@@ -14,8 +14,15 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Jackson person repository.
+ */
 public class JacksonPersonRepository implements PersonRepository {
     private final ObjectMapper mapper;
+
+    /**
+     * Instantiates a new Jackson person repository.
+     */
     public JacksonPersonRepository() {
         // Jackson: clase principal para leer/escribir JSON
         this.mapper = new ObjectMapper();
